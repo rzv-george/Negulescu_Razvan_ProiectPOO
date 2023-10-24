@@ -19,7 +19,7 @@ public:
         return nr_gpu;
     }
 
-    GPU(string producator, int vram, float latime, int nr_porturi, string* nume_porturi):id(nr_gpu)
+    GPU(string producator, int vram, float latime, int nr_porturi, const string* nume_porturi):id(nr_gpu)
     {
         nr_gpu++;
         this->producator = producator;
@@ -64,7 +64,7 @@ public:
     }
 
     void AfisareGPU() {
-        cout << "Placa video este de la producatorul " << producator << ", are o capacitate VRAM de " << vram << "GB si are o latime de " <<
+        cout << "Placa video cu ID-ul "<<id+1<<" este de la producatorul " << producator << ", are o capacitate VRAM de "  << vram << " GB si are o latime de " <<
             latime << ". Prezinta " << nr_porturi << " porturi, respectiv: ";
         if (nr_porturi > 0)
         {
@@ -133,7 +133,7 @@ public:
     }
 
     void afisareRAM() {
-        cout << endl << "Placuta de RAM " << producator << " este de generatia DDR" << ddr << " si are o frecventa de " << frecventa << " GHz si";
+        cout << endl << "Placuta de RAM cu ID-ul "<<id_ram+1 << " de la producatorul " << producator << " este de generatia DDR" << ddr << " si are o frecventa de " << frecventa << " GHz si";
         if (kit == true)
         {
             cout << " apartine unui kit, cu o memorie totala de ";
@@ -186,7 +186,7 @@ public:
 
     NodM() : id_nod(nr_nod) {
         nr_nod++;
-        this->nume = "PU";
+        this->nume = "SOUTH_BRIDGE";
         this->marime_nod = 200;
         this->ncnx = 0;
         this->nume_cnx = NULL;
@@ -199,7 +199,7 @@ public:
     }
 
     void afisareInfoNodM() {
-        cout << "Nodul " << nume << " are o marime de " << marime_nod << " unitati si este conectat la " << ncnx << " alte noduri respectiv, nodurile: "<< endl;
+        cout << "Nodul " << nume <<" cu ID-ul "<<id_nod+1<< " are o marime de " << marime_nod << " unitati si este conectat la " << ncnx << " alte noduri respectiv, nodurile: "<< endl;
         if (ncnx > 0)
         {
             
@@ -265,19 +265,19 @@ int main() {
     system("cls");
 
     string* nume_noduri = new string[4];
-    nume_noduri[0] = "A";
-    nume_noduri[1] = "B";
-    nume_noduri[2] = "C";
-    nume_noduri[3] = "D";
+    nume_noduri[0] = "I/O";
+    nume_noduri[1] = "SATA";
+    nume_noduri[2] = "FP_USB";
+    nume_noduri[3] = "USB_h";
 
     NodM nod1;
     nod1.afisareInfoNodM();
 
-    NodM nod2("K", 222, 4, nume_noduri);
+    NodM nod2("NORTH_BRIDGE", 222, 4, nume_noduri);
     nod2.afisareInfoNodM();
 
     NodM nod3(2, nume_noduri);
     nod3.afisareInfoNodM();
 
-    cout << "Au fost create " << NodM::getNr_noduri() << " noduri de statii.";
+    cout << "Au fost create " << NodM::getNr_noduri() << " noduri de magistrale.";
 }
