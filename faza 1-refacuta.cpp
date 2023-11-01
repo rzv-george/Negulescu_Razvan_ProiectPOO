@@ -37,7 +37,7 @@ public:
         for (int i = 0; i < nr_insule; ++i) {
             this->nume_insule[i] = nume_insule[i];
         }
-        
+
     }
 
     Golf() : id(nr_golfuri) {//constrcutor2
@@ -47,7 +47,7 @@ public:
         this->temp_apa = 14.3;
         this->nr_insule = 0;
         this->nume_insule = NULL;
-       
+
     }
 
     Golf(string nume_golf, int nr_insule, string* nume_insule) :id(nr_golfuri) {//constructor3
@@ -74,7 +74,7 @@ public:
         }
     }
 
-    Golf operator=(const Golf &gn) { //supraincarcare de operator =
+    Golf operator=(const Golf& gn) { //supraincarcare de operator =
         if (this != &gn) {
             delete[]this->nume_insule;
             this->nume_golf = gn.nume_golf;
@@ -100,7 +100,7 @@ public:
     }
 
     void AfisareGolf() {
-        cout << "Golful " << nume_golf << " (ID: " << id+1 << ") cu adancimea de " << adancime_apa << " metri si temperatura de " << temp_apa << " grade Celsius." << endl;
+        cout << "Golful " << nume_golf << " (ID: " << id + 1 << ") cu adancimea de " << adancime_apa << " metri si temperatura de " << temp_apa << " grade Celsius." << endl;
         cout << "Numarul de insule: " << nr_insule << ", Numele insulelor: ";
         if (nr_insule > 0) {
             for (int i = 0; i < nr_insule; ++i) {
@@ -112,7 +112,7 @@ public:
         }
         cout << endl << endl;
     }
-//-------getteri--------
+    //-------getteri--------
     string getNumeGolf() {
         return nume_golf;
     }
@@ -131,7 +131,7 @@ public:
     static int getnr_golfuri() { //functie statica
         return nr_golfuri;
     }
-//-------setteri--------
+    //-------setteri--------
     void setNumeGolf(const string& nume) {
         nume_golf = nume;
     }
@@ -165,8 +165,8 @@ string getSirInsule(const Golf& g) {
     for (int i = 0; i < g.nr_insule; i++) {
         auxI += g.nume_insule[i] + ',';
     }
-    cout << "Insulele Goflului " << g.id+1 << " ,respectiv Golful " << g.nume_golf << " ,sunt:";
-    return auxI; 
+    cout << "Insulele Goflului " << g.id + 1 << " ,respectiv Golful " << g.nume_golf << " ,sunt:";
+    return auxI;
 }
 
 bool compGolf(const Golf& golf1, const Golf& golf2) {
@@ -253,6 +253,44 @@ public:
         return *this;
     }
 
+    Rau operator+(const Rau& rpl) const {
+        Rau aux = *this;
+        aux.nume_rau = this->nume_rau + " si " + rpl.nume_rau;
+        aux.lungime = this->lungime + rpl.lungime;
+        aux.debit = this->debit + rpl.debit;
+        aux.nr_tari = this->nr_tari + rpl.nr_tari;
+        if (aux.tari != NULL) {
+            delete[]aux.tari;
+        }
+        aux.tari = new string[aux.nr_tari];
+        for (int i = 0; i < this->nr_tari; i++) {
+            aux.tari[i] = this->tari[i];
+        }
+        for (int i = this->nr_tari; i < rpl.nr_tari; i++) {
+            aux.tari[i] = rpl.tari[i - this->nr_tari];
+        }
+        return aux;
+    }
+
+    friend ostream& operator<<(ostream& afis, const Rau& Ro) {
+        afis << "Numele raului: " << Ro.nume_rau << endl;
+        afis << "Debitul raului: " << Ro.debit << endl;
+        afis << "Lungimea raului: " << Ro.lungime << endl;
+        afis << "Verificam daca raul are delta(1-da, 0-nu): " << Ro.are_delta << endl;
+        afis << "Numarul tarilor prin care raul trece: " << Ro.nr_tari<< endl;
+        if (Ro.tari != NULL) {
+            delete[]Ro.tari;
+        }
+        string tari = " ";
+        afis << "Numele tarilor prin care raul trece: " << endl;
+        for (int i = 0; i < Ro.nr_tari; i++) {
+             tari += Ro.tari[i] + ", ";
+        }
+        
+        afis << endl;
+        return afis;
+    }
+
     ~Rau() {
         if (this->tari != NULL) {
             delete[]this->tari;
@@ -260,9 +298,9 @@ public:
     }
 
     void AfisareRau() {
-        cout << "Raul " << nume_rau << " (ID: " << id+1 << ") are o lungime de " << lungime << " kilometri si un debit de apa de " << debit << " metri cubi pe secunda." << endl;
+        cout << "Raul " << nume_rau << " (ID: " << id + 1 << ") are o lungime de " << lungime << " kilometri si un debit de apa de " << debit << " metri cubi pe secunda." << endl;
         cout << "Are delta: " << (are_delta ? "Da" : "Nu") << endl;
-        cout << "Numarul de tari prin care trece: " << nr_tari << endl <<"Numele tarilor: " << endl;
+        cout << "Numarul de tari prin care trece: " << nr_tari << endl << "Numele tarilor: " << endl;
         if (nr_tari > 0) {
             for (int i = 0; i < nr_tari; ++i) {
                 cout << "->" << tari[i] << endl;
@@ -274,7 +312,7 @@ public:
         cout << endl << endl;
     }
 
-//-----getteri-----
+    //-----getteri-----
     string getNumeRau() {
         return nume_rau;
     }
@@ -296,14 +334,14 @@ public:
     string* getTari() const {
         return tari;
     }
-//-----setteri-----
+    //-----setteri-----
     void setNumeRau(const string& nume) {
         nume_rau = nume;
     }
     void setLungime(const int& length) {
         lungime = length;
     }
-    void setDebit(const float& dbt){
+    void setDebit(const float& dbt) {
         debit = dbt;
     }
     void setAreDelta(const bool& delta) {
@@ -358,7 +396,7 @@ private:
     const int id_natiune;
 
 public:
-    
+
     Natiune(string nume, int marime_natiune, int nr_vecini, string* nume_vecin) :id_natiune(nr_natiune) { //c1
         nr_natiune++;
         this->nume = nume;
@@ -442,7 +480,7 @@ public:
         else { NOT_AVAILABLEl; cout << GREEN << nume << RESET; NOT_AVAILABLEr; }
         cout << endl << endl;
     }
-//-----getteri-----
+    //-----getteri-----
     string getNumeNatiune() {
         return nume;
     }
@@ -458,7 +496,7 @@ public:
     static int getnr_natiuni() {
         return nr_natiune;
     }
-//-----setteri-----
+    //-----setteri-----
     void setNumeNatiune(string nume) {
         this->nume = nume;
     }
@@ -466,20 +504,20 @@ public:
         this->marime_natiune = marime;
     }
     void setVecini(const int nr_vecini, string* vecin) {
-         if (nr_vecini > 0) {
+        if (nr_vecini > 0) {
             if (this->nume_vecin != NULL) {
                 delete[]this->nume_vecin;
             }
-         this->nr_vecini = nr_vecini;
-         this->nume_vecin = new string[nr_vecini];
-         for (int i = 0; i < nr_vecini; i++) {
-             this->nume_vecin[i] = vecin[i];
-         }
-       }
+            this->nr_vecini = nr_vecini;
+            this->nume_vecin = new string[nr_vecini];
+            for (int i = 0; i < nr_vecini; i++) {
+                this->nume_vecin[i] = vecin[i];
+            }
+        }
     }
 
     friend string getSirTari(const Natiune& n);
-    friend float mediaPopulatiei(const Natiune& tara1, const Natiune& tara2); 
+    friend float mediaPopulatiei(const Natiune& tara1, const Natiune& tara2);
 };
 
 string getSirTari(const Natiune& n) {
@@ -522,7 +560,7 @@ int main() {
     cout << golf4.getNumeGolf() << endl << golf3.getAdancimeApa() << endl << golf4.getTempApa() << endl << golf4.getNrInsule() << endl;
     int i = 0;
     while (i < var) {
-        cout << *(golf4.getNumeInsule()+i) << " ";
+        cout << *(golf4.getNumeInsule() + i) << " ";
         i++;
     }
     cout << endl;
@@ -531,7 +569,7 @@ int main() {
     golf5.setTempApa(33.5);
     golf5.setInsule(3, nume_insule);
     golf5.AfisareGolf();
-    
+
     cout << getSirInsule(golf1) << endl;
     if (compGolf(golf1, golf2)) {
         cout << "Golf A este la fel ca Golf B." << endl;
@@ -555,10 +593,12 @@ int main() {
     Rau rau1(true, 3, tariVolga);
     Rau rau2;
     Rau rau3("Ialomita", 400, 234.3, true, 1, tariIalomita);
-    Rau rau4=rau3;
+    Rau rau4 = rau3;
     Rau rau5;
     Rau rau6;
     rau6 = rau5 = rau1;
+    Rau rau7;
+    rau7 = rau3 + rau2;
 
     rau1.AfisareRau();
     rau2.AfisareRau();
@@ -566,6 +606,9 @@ int main() {
     rau4.AfisareRau();
     rau5.AfisareRau();
     rau6.AfisareRau();
+    rau7.AfisareRau();
+
+    cout << rau1;
 
     cout << rau3.getDebit() << endl << "(Daca este 1, are delta , daca este 0 este nu are delta): " << rau3.getAreDelta() << endl
         << rau3.getLungime() << endl << rau3.getNumeRau() << endl << rau3.getNrTari() << endl;
@@ -584,10 +627,10 @@ int main() {
     rau1.AfisareRau();
 
     string capitaleTariV = getCapitalaTari(rau1, CapitaleVolga);
-    cout << "Capitalele tarilor prin care trece raul " << rau1.getNumeRau() <<" sunt:" << endl << capitaleTariV;
+    cout << "Capitalele tarilor prin care trece raul " << rau1.getNumeRau() << " sunt:" << endl << capitaleTariV;
     string capitaleIalomita = getCapitalaTari(rau3, CapitaleIalomita);
-    cout << "Capitalele tarilor prin care trece raul " << rau3.getNumeRau() <<" sunt:" << endl << capitaleIalomita;
-    
+    cout << "Capitalele tarilor prin care trece raul " << rau3.getNumeRau() << " sunt:" << endl << capitaleIalomita;
+
     cout << getSirTari(rau1) << endl;
 
     cout << endl << "Au fost create " << Rau::getnumar_rauri() << " rauri";
@@ -600,16 +643,16 @@ int main() {
     string nume_veciniRO[] = { "Ungaria", "Ucraina", "Moldova", "Serbia", "Bulgaria" };
     string nume_veciniLH[] = { "Elvetia", "Austria" };
 
-    cout << "Tara despre care se vorbeste va fi highlighted cu verde"<<endl;
+    cout << "Tara despre care se vorbeste va fi highlighted cu verde" << endl;
 
     Natiune natiune1;
     Natiune natiune2(2, nume_veciniLH);
     Natiune natiune3("Romania", 19000000, 5, nume_veciniRO);
-    Natiune natiune4=natiune3;
+    Natiune natiune4 = natiune3;
     Natiune natiune5;
     Natiune natiune6;
     natiune6 = natiune5 = natiune2;
-    
+
     natiune1.afisareInfoNatiune();
     natiune2.afisareInfoNatiune();
     natiune3.afisareInfoNatiune();
@@ -622,7 +665,7 @@ int main() {
     int Na = 0;
     while (Na < varN)
     {
-        cout << "->" << * (natiune4.getNumeVecini() + Na) << endl;
+        cout << "->" << *(natiune4.getNumeVecini() + Na) << endl;
         Na++;
     }
     natiune2.setMarimeNatiune(69803);
@@ -630,7 +673,7 @@ int main() {
     natiune2.setVecini(1, nume_veciniLH);
     cout << endl;
     natiune2.afisareInfoNatiune();
-    
+
     cout << getSirTari(natiune4) << endl;
     cout << "Media populatiei dintre " << natiune1.getNumeNatiune() << " si " << natiune2.getNumeNatiune() << " este de " << fixed << setprecision(2) << mediaPopulatiei(natiune1, natiune2) << endl;
     cout << endl << "Au fost create " << Natiune::getnr_natiuni() << " natiuni" << endl;
