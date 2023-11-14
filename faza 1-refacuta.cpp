@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <iomanip>
+#include <vector>
 #define HORIZONTAL_BAR cout<<"-------"
 #define NOT_AVAILABLEr cout<<"-------N/A"
 #define NOT_AVAILABLEl cout<<"N/A-------"
@@ -139,9 +140,23 @@ public:
         gi.nume_insule = new string[gi.nr_insule];
         for (int i = 0; i < gi.nr_insule; i++) {
             intr >> gi.nume_insule[i];
-            cout << gi.nume_insule[i];
         }
         return intr;
+    }
+
+    friend ostream& operator<<(ostream& output, const Golf& Gout) {
+        output << "Numele Golfului: " << Gout.nume_golf << endl;
+        output << "Adancimea Golfului: " << Gout.adancime_apa << endl;
+        output << "Temperatura Golfului: " << Gout.temp_apa << endl;
+        output << "Numarul de insule: " << Gout.nr_insule << endl;
+        string insule = " ";
+        output << "Numele insulelor: " << endl;
+        for (int i = 0; i < Gout.nr_insule; i++) {
+            insule += Gout.nume_insule[i];
+            output << Gout.nume_insule[i] << " ";
+        }
+        output << endl << endl;
+        return output;
     }
 
     ~Golf() { //destructor
@@ -150,7 +165,7 @@ public:
         }
     }
 
-    void AfisareGolf() {
+    void AfisareGolf() const {
         cout << "Golful " << nume_golf << " (ID: " << id + 1 << ") cu adancimea de " << adancime_apa << " metri si temperatura de " << temp_apa << " grade Celsius." << endl;
         cout << "Numarul de insule: " << nr_insule << ", Numele insulelor: ";
         if (nr_insule > 0) {
@@ -340,6 +355,28 @@ public:
         nr_rauri--;
         return afis;
     }
+
+    friend istream& operator>>(istream& cit, Rau& rr) {
+        cout << "Numele: ";
+        cit >> rr.nume_rau;
+        cout << "Debit: ";
+        cit >> rr.debit;
+        cout << "Lungime: ";
+        cit >> rr.lungime;
+        cout << "Are delta: ";
+        cit >> rr.are_delta;
+        cout << "Numarul de tari prin care trece este: ";
+        cit >> rr.nr_tari;
+        if (rr.tari != NULL) {
+            delete[]rr.tari;
+        }
+        cout << "Tarile sunt: ";
+        rr.tari = new string[rr.nr_tari];
+        for (int i = 0; i < rr.nr_tari; i++) {
+            cit >> rr.tari[i];
+        }
+        return cit;
+    }
     bool operator<(Rau& r) { //supraincarcare de operator < pentru atributul de lungime
         nr_rauri--;
         return this->lungime < r.lungime;
@@ -351,7 +388,7 @@ public:
         }
     }
 
-    void AfisareRau() { //metoda de afisare
+    void AfisareRau() const { //metoda de afisare
         cout << "Raul " << nume_rau << " (ID: " << id + 1 << ") are o lungime de " << lungime << " kilometri si un debit de apa de " << debit << " metri cubi pe secunda." << endl;
         cout << "Are delta: " << (are_delta ? "Da" : "Nu") << endl;
         cout << "Numarul de tari prin care trece: " << nr_tari << endl << "Numele tarilor: " << endl;
@@ -509,13 +546,27 @@ public:
         return *this;
     }
 
+    friend ostream& operator<<(ostream& o, const Natiune& no) {
+        o << "Numele Natiunii: " << no.nume << endl;
+        o << "Marimea Natiunii: " << no.marime_natiune << endl;
+        o << "Numarul de vecini: " << no.nr_vecini << endl;
+        o << "Numele Vecinilor este: " << endl;
+        string vecini = " ";
+        for (int i = 0; i < no.nr_vecini; i++) {
+            vecini += no.nume_vecin[i];
+            o << no.nume_vecin[i] << " ";
+        }
+        o << endl << endl;
+        return o;
+    }
+
     ~Natiune() { //destructor
         if (this->nume_vecin != NULL) {
             delete[]this->nume_vecin;
         }
     }
 
-    void afisareInfoNatiune() { //afisare
+    void afisareInfoNatiune() const { //afisare
         cout << "Tara " << nume << " cu ID-ul (" << id_natiune + 1 << ") are o populatie de " << marime_natiune << " oameni si este conectata la " << nr_vecini << " alte tari: " << endl;
         if (nr_vecini > 0)
         {
@@ -633,7 +684,7 @@ int main() {
     Golf golf7;
     golf7 = golf3 - golf2; //op -
     Golf golf8;
-    cin >> golf8; //op >>
+    //cin >> golf8; //op >>
 
     golf1.AfisareGolf();
     golf2.AfisareGolf();
@@ -669,6 +720,40 @@ int main() {
 
     golf3++; //op ++
     golf3.AfisareGolf();
+    
+    cout << endl << endl;
+    const int numar_obiecteG = 2;
+    vector<Golf> vectorGolf(numar_obiecteG);
+
+    for (int i = 0; i < numar_obiecteG; ++i) {
+        cout << "Introduceti datele pentru obiectul Golf la pozitia " << i << ":\n";
+        cin >> vectorGolf[i];
+    }
+    cout << endl << endl;
+    for (int i = 0; i < numar_obiecteG; ++i) {
+        cout << "Afisare obiect Golf la pozitia " << i << ":\n";
+        cout << vectorGolf[i];
+    }
+
+    const int numar_linii = 2;
+    const int numar_coloane = 2;
+
+    Golf matriceGolf[numar_linii][numar_coloane];
+
+    for (int i = 0; i < numar_linii; ++i) {
+        for (int j = 0; j < numar_coloane; ++j) {
+            cout << "Introduceti datele pentru obiectul Golf la pozitia [" << i << "][" << j << "]:\n";
+            cin >> matriceGolf[i][j];
+            cout << endl;
+        }
+    }
+
+    for (int i = 0; i < numar_linii; ++i) {
+        for (int j = 0; j < numar_coloane; ++j) {
+            cout << "Afisare obiect Golf la pozitia [" << i << "][" << j << "]:\n";
+            cout << matriceGolf[i][j];
+        }
+    }
 
     cout << endl << "Au fost create " << Golf::getnr_golfuri() << " golfuri";
     cout << endl << endl << endl << endl;
@@ -731,6 +816,19 @@ int main() {
     }
     else
         cout << "Raul " << rau1.getNumeRau() << " este mai lung";
+    cout << endl << endl;
+    const int numar_obiecteR = 2;
+    vector <Rau> vectorRau(numar_obiecteR);
+
+    for (int i = 0; i < numar_obiecteR; ++i) {
+        cout << "Introduceti datele pentru obiectul Rau la pozitia " << i << ":\n";
+        cin >> vectorRau[i];
+    }
+    cout << endl << endl;
+    for (int i = 0; i < numar_obiecteR; ++i) {
+        cout << "Afisare obiect Rau la pozitia " << i << ":\n";
+        cout << vectorRau[i];
+    }
 
     cout << endl << "Au fost create " << Rau::getnumar_rauri() << " rauri";
 
@@ -753,7 +851,7 @@ int main() {
     Natiune natiune6;
     natiune6 = natiune5 = natiune2;
     Natiune natiune7;
-    cin >> natiune7;
+    //cin >> natiune7;
 
     natiune1.afisareInfoNatiune();
     natiune2.afisareInfoNatiune();
@@ -761,6 +859,7 @@ int main() {
     natiune4.afisareInfoNatiune();
     natiune5.afisareInfoNatiune();
     natiune6.afisareInfoNatiune();
+    natiune7.afisareInfoNatiune();
 
     cout << natiune4.getMarimeNatiune() << endl << natiune4.getNumeNatiune() << endl << natiune4.getNrVecini() << endl;
     int varN = natiune4.getNrVecini();
@@ -782,7 +881,22 @@ int main() {
     int valIn = 10;
     valIn = (int)natiune3;
     cout << valIn;
-    cout << endl << "Au fost create " << Natiune::getnr_natiuni() << " natiuni" << endl;
+    cout << endl << endl;
+    const int numar_obiecteN = 2;
+    vector <Natiune> vectorNatiuni(numar_obiecteN);
 
+    for (int i = 0; i < numar_obiecteN; ++i) {
+        cout << "Introduceti datele pentru obiectul Natiune la pozitia " << i << ":\n";
+        cin >> vectorNatiuni[i];
+    }
+    cout << endl << endl;
+    for (int i = 0; i < numar_obiecteN; ++i) {
+        cout << "Afisare obiect Natiune la pozitia " << i << ":\n";
+        cout << vectorNatiuni[i];
+    }
+
+    cout << endl << "Au fost create " << Natiune::getnr_natiuni() << " natiuni" << endl;
+    
     return 0;
+   
 }
