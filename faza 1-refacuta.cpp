@@ -1,7 +1,6 @@
 //Negulescu Razvan-George, Seria B, grupa 1047
 //Domeniul:Geografie
 #include <iostream>
-#include <cstdlib>
 #include <iomanip>
 #include <vector>
 #define HORIZONTAL_BAR cout<<"-------"
@@ -28,9 +27,9 @@ private:
 
 public:
 
-    Golf(string nume_golf, int adancime_apa, float temp_apa, int nr_insule, string* nume_insule) : id(nr_golfuri) { //constructor 1
+    Golf(string num_golf, int adancime_apa, float temp_apa, int nr_insule, string* nume_insule) : id(nr_golfuri) { //constructor 1
         nr_golfuri++;
-        this->nume_golf = nume_golf;
+        nume_golf = num_golf;
         this->adancime_apa = adancime_apa;
         this->temp_apa = temp_apa;
         this->nr_insule = nr_insule;
@@ -477,8 +476,9 @@ string getCapitalaTari(const Rau& r, const string capitale[]) {
 }
 
 class Natiune {
-private:
+public:
     string nume;
+private:
     int marime_natiune;
     int nr_vecini;
     string* nume_vecin;
@@ -651,6 +651,68 @@ public:
 
     friend string getSirTari(const Natiune& n);
     friend float mediaPopulatiei(const Natiune& tara1, const Natiune& tara2);
+};
+
+class Continent {
+private:
+    string nume;
+    int marime_continent;
+    Natiune natiune;
+public:
+    Continent(string nume, int marime_continent, Natiune& nat){
+        this->nume = nume;
+        this->marime_continent = marime_continent;
+        this->natiune = nat;
+    }
+    Continent(Natiune& nat) {
+        this->nume = "Africa";
+        this->marime_continent = 6969;
+        this->natiune = nat;
+    }
+    void afisareContinet() {
+        cout << "Numele Continentului este: " << nume << endl << "Marimea Continentului este de: " << marime_continent << endl;
+        natiune.afisareInfoNatiune();
+    }
+    void setNume(string nume) {
+        this->nume = nume;
+    }
+    void setMarimeCont(int marime_continent) {
+        this->marime_continent = marime_continent;
+    }
+    string getNume() {
+        return nume;
+    }
+    int getMarimeContinent(){
+        return marime_continent;
+    }
+    int GetNatCont() {
+        cout << "Tara " << natiune.getNumeNatiune() << " apartine continentului " << nume << ", continent cu o marime de ";
+        return marime_continent;
+    }
+    void setNatCont(Natiune& natiune) {
+        this->natiune = natiune;
+    }
+    Continent operator=(const Continent& cc) { //supraincarcare operator =
+        this->nume = cc.nume;
+        this->marime_continent = cc.marime_continent;
+        this->natiune = cc.natiune;
+        return *this;
+    }
+    friend ostream& operator<<(ostream& afis, const Continent& co) {
+        afis << "Numele cont: " << co.nume << endl;
+        afis << "Marimea cont: " << co.marime_continent << endl;
+        afis << "INFORMATII DESPRE NATIUNE: " << co.natiune;
+        return afis;
+    }
+    friend istream& operator>>(istream& cit, Continent& ci) {
+        cout << "Numele Cont: ";
+        cit >> ci.nume;
+        cout << "Marimea Cont: ";
+        cit >> ci.marime_continent;
+        cout << "Natiunea din continent: ";
+        cit >> ci.natiune;
+        return cit;
+    }
 };
 
 string getSirTari(const Natiune& n) {
@@ -895,6 +957,22 @@ int main() {
         cout << vectorNatiuni[i];
     }
 
+    Continent continent("Europa", 12345, natiune3);
+    Continent continent2(natiune1);
+    Continent continent3(natiune2);
+    Continent continent4(natiune5);
+    Continent continent5(natiune6);
+    continent5 = continent;
+    continent.afisareContinet();
+    continent2.getNume();
+    cout << continent.GetNatCont() << endl;
+    continent.afisareContinet();
+    continent2.afisareContinet();
+    cout << endl << endl;
+    cout << continent3;
+    cin >> continent4;
+    cout << continent4;
+    cout << continent5;
     cout << endl << "Au fost create " << Natiune::getnr_natiuni() << " natiuni" << endl;
     
     return 0;
