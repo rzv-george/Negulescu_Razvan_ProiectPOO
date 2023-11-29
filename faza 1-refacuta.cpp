@@ -3,6 +3,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <fstream>
 #define HORIZONTAL_BAR cout<<"-------"
 #define NOT_AVAILABLEr cout<<"-------N/A"
 #define NOT_AVAILABLEl cout<<"N/A-------"
@@ -176,6 +177,34 @@ public:
             cout << "N/A";
         }
         cout << endl << endl;
+    }
+
+    friend ifstream& operator>>(ifstream& cit, Golf& gcf) {
+        cit >> gcf.nume_golf;
+        cit >> gcf.temp_apa;
+        cit >> gcf.adancime_apa;
+        cit >> gcf.nr_insule;
+        if (gcf.nume_insule != NULL) {
+            delete[]gcf.nume_insule;
+        }
+        gcf.nume_insule = new string[gcf.nr_insule];
+        for (int i = 0; i < gcf.nr_insule; i++) {
+            cit >> gcf.nume_insule[i];
+        }
+        return cit;
+    }
+
+    friend ofstream& operator<< (ofstream& output, const Golf& Gout) {
+        output << Gout.nume_golf << " ";
+        output << Gout.temp_apa << " ";
+        output << Gout.adancime_apa << " ";
+        output << Gout.nr_insule << " ";
+        string insule = " ";
+        for (int i = 0; i < Gout.nr_insule; i++) {
+            insule += Gout.nume_insule[i];
+            output << Gout.nume_insule[i] << " ";
+        }
+        return output;
     }
     //-------getteri--------
     string getNumeGolf() {
@@ -355,6 +384,21 @@ public:
         return afis;
     }
 
+    friend ofstream& operator<<(ofstream& afis, const Rau& Ro) {
+        afis << Ro.nume_rau << " ";
+        afis << Ro.debit << " ";
+        afis << Ro.lungime << " ";
+        afis << Ro.are_delta << " ";
+        afis << Ro.nr_tari << " ";
+        string tari = " ";
+        for (int i = 0; i < Ro.nr_tari; i++) {
+            tari += Ro.tari[i];
+            afis << Ro.tari[i] << " ";
+        }
+        nr_rauri--;
+        return afis;
+    }
+
     friend istream& operator>>(istream& cit, Rau& rr) {
         cout << "Numele: ";
         cit >> rr.nume_rau;
@@ -376,6 +420,23 @@ public:
         }
         return cit;
     }
+
+    friend ifstream& operator>>(ifstream& cit, Rau& rr) {
+        cit >> rr.nume_rau;
+        cit >> rr.debit;
+        cit >> rr.lungime;
+        cit >> rr.are_delta;
+        cit >> rr.nr_tari;
+        if (rr.tari != NULL) {
+            delete[]rr.tari;
+        }
+        rr.tari = new string[rr.nr_tari];
+        for (int i = 0; i < rr.nr_tari; i++) {
+            cit >> rr.tari[i];
+        }
+        return cit;
+    }
+
     bool operator<(Rau& r) { //supraincarcare de operator < pentru atributul de lungime
         nr_rauri--;
         return this->lungime < r.lungime;
@@ -559,6 +620,19 @@ public:
         o << endl << endl;
         return o;
     }
+    friend ofstream& operator<<(ofstream& o, const Natiune& no) {
+        o << no.nume << endl;
+        o << no.marime_natiune << endl;
+        o << no.nr_vecini << endl;
+        o << endl;
+        string vecini = " ";
+        for (int i = 0; i < no.nr_vecini; i++) {
+            vecini += no.nume_vecin[i];
+            o << no.nume_vecin[i] << " ";
+        }
+        o << endl << endl;
+        return o;
+    }
 
     ~Natiune() { //destructor
         if (this->nume_vecin != NULL) {
@@ -639,6 +713,21 @@ public:
         return intr;
     }
 
+    friend ifstream& operator>>(ifstream& intr, Natiune& n) { //supraincarcare de citire
+        intr >> n.nume;
+        intr >> n.marime_natiune;
+        intr >> n.nr_vecini;
+        if (n.nume_vecin != NULL) {
+            delete[]n.nume_vecin;
+        }
+        n.nume_vecin = new string[n.nr_vecini];
+        for (int i = 0; i < n.nr_vecini; i++) {
+            intr >> n.nume_vecin[i];
+            cout << n.nume_vecin[i];
+        }
+        return intr;
+    }
+
     string& operator[](int i) { //supraincarcare de indexare
         if (i >= 0 && i < this->nr_vecini) {
             return nume_vecin[i];
@@ -659,6 +748,10 @@ private:
     int marime_continent;
     Natiune natiune;
 public:
+    Continent() {
+        this->nume = "Africa";
+        this->marime_continent = 123455;
+    }
     Continent(string nume, int marime_continent, Natiune& nat){
         this->nume = nume;
         this->marime_continent = marime_continent;
@@ -704,12 +797,15 @@ public:
         afis << "INFORMATII DESPRE NATIUNE: " << co.natiune;
         return afis;
     }
-    friend istream& operator>>(istream& cit, Continent& ci) {
-        cout << "Numele Cont: ";
+    friend ofstream& operator<<(ofstream& afis, const Continent& co) {
+        afis << co.nume << endl;
+        afis << co.marime_continent << endl;
+        afis << co.natiune;
+        return afis;
+    }
+    friend ifstream& operator>>(ifstream& cit, Continent& ci) {
         cit >> ci.nume;
-        cout << "Marimea Cont: ";
         cit >> ci.marime_continent;
-        cout << "Natiunea din continent: ";
         cit >> ci.natiune;
         return cit;
     }
@@ -782,9 +878,9 @@ int main() {
 
     golf3++; //op ++
     golf3.AfisareGolf();
-    
+
     cout << endl << endl;
-    const int numar_obiecteG = 2;
+    /*const int numar_obiecteG = 2;
     vector<Golf> vectorGolf(numar_obiecteG);
 
     for (int i = 0; i < numar_obiecteG; ++i) {
@@ -815,7 +911,16 @@ int main() {
             cout << "Afisare obiect Golf la pozitia [" << i << "][" << j << "]:\n";
             cout << matriceGolf[i][j];
         }
-    }
+    }*/
+
+    ofstream afisare("textGolf.txt", ios::out);
+    afisare << golf1;
+    afisare.close();
+    ifstream intrare("textGolf.txt", ios::in);
+    Golf g1;
+    intrare >> g1;
+    cout << g1;
+    intrare.close();
 
     cout << endl << "Au fost create " << Golf::getnr_golfuri() << " golfuri";
     cout << endl << endl << endl << endl;
@@ -879,7 +984,7 @@ int main() {
     else
         cout << "Raul " << rau1.getNumeRau() << " este mai lung";
     cout << endl << endl;
-    const int numar_obiecteR = 2;
+    /*const int numar_obiecteR = 2;
     vector <Rau> vectorRau(numar_obiecteR);
 
     for (int i = 0; i < numar_obiecteR; ++i) {
@@ -890,7 +995,16 @@ int main() {
     for (int i = 0; i < numar_obiecteR; ++i) {
         cout << "Afisare obiect Rau la pozitia " << i << ":\n";
         cout << vectorRau[i];
-    }
+    }*/
+
+    ofstream afisareR("textRau.txt", ios::out);
+    afisareR << rau1;
+    afisareR.close();
+    ifstream intrareR("textRau.txt", ios::in);
+    Rau r2;
+    intrareR >> r2;
+    cout << r2;
+    intrareR.close();
 
     cout << endl << "Au fost create " << Rau::getnumar_rauri() << " rauri";
 
@@ -944,24 +1058,35 @@ int main() {
     valIn = (int)natiune3;
     cout << valIn;
     cout << endl << endl;
-    const int numar_obiecteN = 2;
-    vector <Natiune> vectorNatiuni(numar_obiecteN);
+    /* const int numar_obiecteN = 2;
+     vector <Natiune> vectorNatiuni(numar_obiecteN);
 
-    for (int i = 0; i < numar_obiecteN; ++i) {
-        cout << "Introduceti datele pentru obiectul Natiune la pozitia " << i << ":\n";
-        cin >> vectorNatiuni[i];
-    }
-    cout << endl << endl;
-    for (int i = 0; i < numar_obiecteN; ++i) {
-        cout << "Afisare obiect Natiune la pozitia " << i << ":\n";
-        cout << vectorNatiuni[i];
-    }
+     for (int i = 0; i < numar_obiecteN; ++i) {
+         cout << "Introduceti datele pentru obiectul Natiune la pozitia " << i << ":\n";
+         cin >> vectorNatiuni[i];
+     }
+     cout << endl << endl;
+     for (int i = 0; i < numar_obiecteN; ++i) {
+         cout << "Afisare obiect Natiune la pozitia " << i << ":\n";
+         cout << vectorNatiuni[i];
+     }*/
+    Natiune nat;
+    fstream natiuneAfis("NatiuniOut.bin", ios::out | ios::binary);
+    natiuneAfis.write((char*)&nat, sizeof(Natiune));
+    natiuneAfis.close();
+
+    cout << endl << "Au fost create " << Natiune::getnr_natiuni() << " natiuni" << endl;
+
+    cout << endl << endl << endl << endl;
+    cout << "-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/--/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-";
+    cout << endl << endl << endl << endl;
 
     Continent continent("Europa", 12345, natiune3);
     Continent continent2(natiune1);
     Continent continent3(natiune2);
     Continent continent4(natiune5);
     Continent continent5(natiune6);
+    Continent c6;
     continent5 = continent;
     continent.afisareContinet();
     continent2.getNume();
@@ -970,10 +1095,13 @@ int main() {
     continent2.afisareContinet();
     cout << endl << endl;
     cout << continent3;
-    cin >> continent4;
+    //cin >> continent4;
     cout << continent4;
     cout << continent5;
-    cout << endl << "Au fost create " << Natiune::getnr_natiuni() << " natiuni" << endl;
+    Continent cont6;
+    fstream contAfis("ContinenteOut.bin", ios::out | ios::binary);
+    contAfis.write((char*)&cont6, sizeof(Natiune));
+    contAfis.close();
     
     return 0;
    
