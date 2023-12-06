@@ -826,6 +826,108 @@ float mediaPopulatiei(const Natiune& tara1, const Natiune& tara2) {
     return media;
 }
 
+class TaraInsulara : public Natiune{
+private:
+    string ocean;
+    int nrInsule;
+public:
+    string nume[1] = {" "};
+    TaraInsulara() : Natiune() {
+        this->ocean = "Pacific";
+        this->nrInsule = 456;
+    }
+    TaraInsulara(string ocean, int nrInsule) : Natiune("Filipine", 170834809, 0, nume) {
+        this->ocean = ocean;
+        this->nrInsule = nrInsule;
+    }
+    TaraInsulara(const TaraInsulara& ti) : Natiune(ti){
+        this->ocean = ti.ocean;
+        this->nrInsule = ti.nrInsule;
+    }
+    TaraInsulara operator=(const TaraInsulara& ti) {
+        if (this != &ti) {
+            (Natiune)*this = (Natiune)ti;
+            this->ocean = ti.ocean;
+            this->nrInsule = ti.nrInsule;
+        }
+        return *this;
+    }
+    friend ostream& operator<<(ostream& out, const TaraInsulara& t) {
+        out << (Natiune)t << endl;
+        out << "Tara se afla in oceanul " << t.ocean << " si are " << t.nrInsule << " insule." << endl;
+        return out;
+    }
+    string getOcean() {
+        return ocean;
+    }
+    int getnrInsule() {
+        return nrInsule;
+    }
+    void setOcean(string ocean) {
+        this->ocean = ocean;
+    }
+    void setNrInsule(int nr) {
+        this->nrInsule = nr;
+    }
+};
+
+class RauriRomanesti : public Rau {
+private:
+    char* numeJudetIZV;
+    int nrJudete;
+    bool extraNational;
+public:
+    string rom[3] = {"Romania", "Moldova"};
+    RauriRomanesti() : Rau(false, 1, rom) {
+        this->nrJudete = 7;
+        this->numeJudetIZV = new char[strlen("Dambovita") + 1];
+        strcpy_s(this->numeJudetIZV, strlen("Dambovita") + 1, "Dambovita");
+        this->extraNational = false;
+    }
+    RauriRomanesti(const char* numeIzv, int judete, bool exnat) : Rau(false, 2, rom) {
+        this->nrJudete = judete;
+        this->numeJudetIZV = new char[strlen(numeIzv) + 1];
+        strcpy_s(this->numeJudetIZV, strlen(numeIzv) + 1, numeIzv);
+        this->extraNational = exnat;
+    }
+    RauriRomanesti(const RauriRomanesti& r) :Rau(r) {
+        this->numeJudetIZV = new char[strlen(r.numeJudetIZV) + 1];
+        strcpy_s(this->numeJudetIZV, strlen(r.numeJudetIZV) + 1, r.numeJudetIZV);
+        this->nrJudete = r.nrJudete;
+        this->extraNational = r.extraNational;
+    }
+    RauriRomanesti operator=(const RauriRomanesti& r) {
+        if (this != &r) {
+            (Rau)*this = (Rau)r;
+            if (this->numeJudetIZV != NULL) {
+                delete[]this->numeJudetIZV;
+            }
+            this->numeJudetIZV = new char[strlen(r.numeJudetIZV) + 1];
+            strcpy_s(this->numeJudetIZV, strlen(r.numeJudetIZV) + 1, r.numeJudetIZV);
+            this->nrJudete = r.nrJudete;
+            this->extraNational = r.extraNational;
+        }
+        return *this;
+    }
+    ~RauriRomanesti() {
+        if (this->numeJudetIZV) {
+            delete[]this->numeJudetIZV;
+        }
+    }
+    friend ostream& operator<<(ostream& out, const RauriRomanesti& rr) {
+        out << (Rau)rr << endl;
+        out << "Raul Romanesc trece prin " << rr.nrJudete << " judete, izvorand din " << rr.numeJudetIZV;
+        out << endl << (rr.extraNational ? "Raul se afla si in alte tari decat Romania" : "Raul se afla numai in Romania");
+        return out;
+    }
+    int getNrJudete() {
+        return nrJudete;
+    }
+    void setNrJudete(int jud) {
+        this->nrJudete = jud;
+    }
+};
+
 int Rau::nr_rauri = 0;
 int Golf::nr_golfuri = 0;
 int Natiune::nr_natiune = 0;
@@ -913,14 +1015,14 @@ int main() {
         }
     }*/
 
-    ofstream afisare("textGolf.txt", ios::out);
+    /*ofstream afisare("textGolf.txt", ios::out);
     afisare << golf1;
     afisare.close();
     ifstream intrare("textGolf.txt", ios::in);
     Golf g1;
     intrare >> g1;
     cout << g1;
-    intrare.close();
+    intrare.close();*/
 
     cout << endl << "Au fost create " << Golf::getnr_golfuri() << " golfuri";
     cout << endl << endl << endl << endl;
@@ -997,14 +1099,14 @@ int main() {
         cout << vectorRau[i];
     }*/
 
-    ofstream afisareR("textRau.txt", ios::out);
+   /* ofstream afisareR("textRau.txt", ios::out);
     afisareR << rau1;
     afisareR.close();
     ifstream intrareR("textRau.txt", ios::in);
     Rau r2;
     intrareR >> r2;
     cout << r2;
-    intrareR.close();
+    intrareR.close()*/;
 
     cout << endl << "Au fost create " << Rau::getnumar_rauri() << " rauri";
 
@@ -1071,9 +1173,9 @@ int main() {
          cout << vectorNatiuni[i];
      }*/
     Natiune nat;
-    fstream natiuneAfis("NatiuniOut.bin", ios::out | ios::binary);
+    /*fstream natiuneAfis("NatiuniOut.bin", ios::out | ios::binary);
     natiuneAfis.write((char*)&nat, sizeof(Natiune));
-    natiuneAfis.close();
+    natiuneAfis.close();*/
 
     cout << endl << "Au fost create " << Natiune::getnr_natiuni() << " natiuni" << endl;
 
@@ -1099,10 +1201,33 @@ int main() {
     cout << continent4;
     cout << continent5;
     Continent cont6;
-    fstream contAfis("ContinenteOut.bin", ios::out | ios::binary);
+    /*fstream contAfis("ContinenteOut.bin", ios::out | ios::binary);
     contAfis.write((char*)&cont6, sizeof(Natiune));
-    contAfis.close();
+    contAfis.close();*/
     
+    cout << endl << endl << endl << endl;
+    cout << "-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-TARI INSULARE-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-";
+    cout << endl << endl << endl << endl;
+
+    TaraInsulara ti1("Indian", 36854);
+    cout << ti1 << endl;
+    TaraInsulara ti2;
+    cout << ti2;
+    TaraInsulara ti3 = ti2;
+    TaraInsulara ti4;
+    ti4 = ti2;
+
+    cout << endl << endl << endl << endl;
+    cout << "-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-RAURI ROMANESTI-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-";
+    cout << endl << endl << endl << endl;
+
+    RauriRomanesti r1;
+    r1.setNumeRau("Dambovita");
+    RauriRomanesti r2("Brasov", 8, true);
+    r2.setNumeRau("Prut");
+    cout << r1 << endl;
+    cout << r2 << endl;
+
     return 0;
    
 }
