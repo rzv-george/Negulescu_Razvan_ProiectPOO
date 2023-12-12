@@ -16,7 +16,47 @@
 #define NW cout<<" \\"<< endl << "\\" << endl << "||"<< endl << "||"<< endl << "||"
 using namespace std;
 
-class Golf {
+class CorpDeApa {
+    string nume;
+public:
+    virtual void DescrieCorp() = 0;
+
+    CorpDeApa() {
+        this->nume = "Numele corpului de apa";
+    }
+
+    string getNume() {
+        return this->nume;
+    }
+
+    void setNume(string nume) {
+        if (nume.length() > 0) {
+            this->nume = nume;
+        }
+    }
+};
+
+class Teritoriu {
+    string nume;
+public:
+    virtual void DescrieTeritoriu() = 0;
+
+    Teritoriu() {
+        this->nume = "Numele teritoriului";
+    }
+
+    string getNume() {
+        return this->nume;
+    }
+
+    void setNume(string nume) {
+        if (nume.length() > 0) {
+            this->nume = nume;
+        }
+    }
+};
+
+class Golf : public CorpDeApa {
 private:
     string nume_golf;
     int adancime_apa;
@@ -28,9 +68,13 @@ private:
 
 public:
 
-    Golf(string num_golf, int adancime_apa, float temp_apa, int nr_insule, string* nume_insule) : id(nr_golfuri) { //constructor 1
+    void DescrieCorp() {
+        cout << "Golful " << nume_golf << " are o adancime de " << adancime_apa << " si o temperatura de " << temp_apa;
+    }
+
+    Golf(string num_golf, int adancime_apa, float temp_apa, int nr_insule, string* nume_insule) : CorpDeApa(), id(nr_golfuri) { //constructor 1
         nr_golfuri++;
-        nume_golf = num_golf;
+        this->nume_golf = num_golf;
         this->adancime_apa = adancime_apa;
         this->temp_apa = temp_apa;
         this->nr_insule = nr_insule;
@@ -41,7 +85,7 @@ public:
 
     }
 
-    Golf() : id(nr_golfuri) {//constrcutor2
+    Golf() : CorpDeApa(), id(nr_golfuri) {//constrcutor2
         nr_golfuri++;
         this->nume_golf = "Persic";
         this->adancime_apa = 8;
@@ -51,7 +95,7 @@ public:
 
     }
 
-    Golf(string nume_golf, int nr_insule, string* nume_insule) :id(nr_golfuri) {//constructor3
+    Golf(string nume_golf, int nr_insule, string* nume_insule) :CorpDeApa(), id(nr_golfuri) {//constructor3
         nr_golfuri++;
         this->nume_golf = nume_golf;
         this->nr_insule = nr_insule;
@@ -63,7 +107,7 @@ public:
         this->adancime_apa = 204;
     }
 
-    Golf(const Golf& gn) :id(nr_golfuri++) { //constructor de copiere
+    Golf(const Golf& gn) :CorpDeApa(gn), id(nr_golfuri++) { //constructor de copiere
         this->nume_golf = gn.nume_golf;
         this->adancime_apa = gn.adancime_apa;
         this->temp_apa = gn.temp_apa;
@@ -78,6 +122,7 @@ public:
     Golf operator=(const Golf& gn) { //supraincarcare de operator =
         if (this != &gn) {
             delete[]this->nume_insule;
+            CorpDeApa::operator=(gn);
             this->nume_golf = gn.nume_golf;
             this->adancime_apa = gn.adancime_apa;
             this->temp_apa = gn.temp_apa;
@@ -269,7 +314,7 @@ bool compGolf(const Golf& golf1, const Golf& golf2) {
         golf1.temp_apa == golf2.temp_apa);
 }
 
-class Rau {
+class Rau : public CorpDeApa{
 private:
     string nume_rau;
     int lungime;
@@ -282,7 +327,11 @@ private:
 
 public:
 
-    Rau() : id(nr_rauri) { //constructor 1
+    void DescrieCorp() {
+        cout << "Raul cu numele de " << this->nume_rau << " are " << this->lungime << " km lungime si un debit de " << this->debit << " metri cubi pe secunda";
+    }
+
+    Rau() : CorpDeApa(), id(nr_rauri) { //constructor 1
         nr_rauri++;
         this->nume_rau = "Huang";
         this->lungime = 14;
@@ -292,7 +341,7 @@ public:
         this->tari = NULL;
     }
 
-    Rau(string nume_rau, int lungime, float debit, bool are_delta, int nr_tari, string* tari) : id(nr_rauri) { //constructor 2
+    Rau(string nume_rau, int lungime, float debit, bool are_delta, int nr_tari, string* tari) : CorpDeApa(), id(nr_rauri) { //constructor 2
         nr_rauri++;
         this->nume_rau = nume_rau;
         this->lungime = lungime;
@@ -305,7 +354,7 @@ public:
         }
     }
 
-    Rau(bool are_delta, int nr_tari, string* tari) : id(nr_rauri) { //constructor 3
+    Rau(bool are_delta, int nr_tari, string* tari) : CorpDeApa(), id(nr_rauri) { //constructor 3
         nr_rauri++;
         this->nume_rau = "Volga";
         this->lungime = 879;
@@ -318,7 +367,7 @@ public:
         }
     }
 
-    Rau(const Rau& rn) : id(nr_rauri++) { //constructor de copiere
+    Rau(const Rau& rn) : CorpDeApa(rn), id(nr_rauri++) { //constructor de copiere
         this->nume_rau = rn.nume_rau;
         this->lungime = rn.lungime;
         this->debit = rn.debit;
@@ -331,6 +380,7 @@ public:
     }
 
     Rau operator=(const Rau& rn) { //supraincarcare de operator =
+        CorpDeApa::operator=(rn);
         this->nume_rau = rn.nume_rau;
         this->lungime = rn.lungime;
         this->debit = rn.debit;
@@ -536,7 +586,7 @@ string getCapitalaTari(const Rau& r, const string capitale[]) {
     return result;
 }
 
-class Natiune {
+class Natiune : public Teritoriu {
 public:
     string nume;
 private:
@@ -547,8 +597,10 @@ private:
     const int id_natiune;
 
 public:
-
-    Natiune(string nume, int marime_natiune, int nr_vecini, string* nume_vecin) :id_natiune(nr_natiune) { //c1
+    void DescrieTeritoriu() {
+        cout << "Natiunea " << this->nume << " are o marime de " << this->marime_natiune << " si " << this->nr_vecini << " vecini";
+    }
+    Natiune(string nume, int marime_natiune, int nr_vecini, string* nume_vecin) :Teritoriu(), id_natiune(nr_natiune) { //c1
         nr_natiune++;
         this->nume = nume;
         this->marime_natiune = marime_natiune;
@@ -561,7 +613,7 @@ public:
 
     }
 
-    Natiune(int nr_vecini, string* nume_vecin) :id_natiune(nr_natiune) { // c2
+    Natiune(int nr_vecini, string* nume_vecin) :Teritoriu(), id_natiune(nr_natiune) { // c2
         nr_natiune++;
         this->nume = "Liechtenstein";
         this->marime_natiune = 78290;
@@ -574,7 +626,7 @@ public:
 
     }
 
-    Natiune() : id_natiune(nr_natiune) { //c3
+    Natiune() :Teritoriu(), id_natiune(nr_natiune) { //c3
         nr_natiune++;
         this->nume = "Australia";
         this->marime_natiune = 12000000;
@@ -582,7 +634,7 @@ public:
         this->nume_vecin = NULL;
     }
 
-    Natiune(const Natiune& nn) : id_natiune(nr_natiune++) { //constructor de copiere
+    Natiune(const Natiune& nn) : Teritoriu(nn), id_natiune(nr_natiune++) { //constructor de copiere
         this->nume = nn.nume;
         this->marime_natiune = nn.marime_natiune;
         this->nr_vecini = nn.nr_vecini;
@@ -871,26 +923,29 @@ public:
     }
 };
 
-class RauriRomanesti : public Rau {
+class RauriRomanesti : public Rau, public CorpDeApa {
 private:
     char* numeJudetIZV;
     int nrJudete;
     bool extraNational;
 public:
+    void DescrieCorp() {
+        cout << "Raul romanesc " << Rau::getNumeRau() << " trece prin " << this->nrJudete << " judete";
+    }
     string rom[3] = {"Romania", "Moldova"};
-    RauriRomanesti() : Rau(false, 1, rom) {
+    RauriRomanesti() : CorpDeApa(), Rau(false, 1, rom) {
         this->nrJudete = 7;
         this->numeJudetIZV = new char[strlen("Dambovita") + 1];
         strcpy_s(this->numeJudetIZV, strlen("Dambovita") + 1, "Dambovita");
         this->extraNational = false;
     }
-    RauriRomanesti(const char* numeIzv, int judete, bool exnat) : Rau(false, 2, rom) {
+    RauriRomanesti(const char* numeIzv, int judete, bool exnat) :CorpDeApa(), Rau(false, 2, rom) {
         this->nrJudete = judete;
         this->numeJudetIZV = new char[strlen(numeIzv) + 1];
         strcpy_s(this->numeJudetIZV, strlen(numeIzv) + 1, numeIzv);
         this->extraNational = exnat;
     }
-    RauriRomanesti(const RauriRomanesti& r) :Rau(r) {
+    RauriRomanesti(const RauriRomanesti& r) :CorpDeApa(),Rau(r) {
         this->numeJudetIZV = new char[strlen(r.numeJudetIZV) + 1];
         strcpy_s(this->numeJudetIZV, strlen(r.numeJudetIZV) + 1, r.numeJudetIZV);
         this->nrJudete = r.nrJudete;
@@ -925,6 +980,45 @@ public:
     }
     void setNrJudete(int jud) {
         this->nrJudete = jud;
+    }
+};
+
+
+
+class ObiecteGeografice {
+    int nrObiecte;
+    CorpDeApa** ca;
+    //Teritoriu** t;
+public:
+    ObiecteGeografice() {
+        this->nrObiecte = 10;
+        this->ca = new CorpDeApa * [10];
+        for (int i = 0; i < 10; i++) {
+            this->ca[i] = new Golf;
+        }
+    }
+    CorpDeApa*& operator[](int i) {
+        if (i >= 0 && i < this->nrObiecte) {
+            return this->ca[i];
+        }
+    }
+};
+
+class ObiecteTeritoriale {
+    int nrObiecte;
+    Teritoriu** t;
+public:
+    ObiecteTeritoriale() {
+        this->nrObiecte = 10;
+        this->t = new Teritoriu * [10];
+        for (int i = 0; i < 10; i++) {
+            this->t[i] = new Natiune;
+        }
+    }
+    Teritoriu*& operator[](int i) {
+        if (i >= 0 && i < this->nrObiecte) {
+            return this->t[i];
+        }
     }
 };
 
@@ -1099,135 +1193,161 @@ int main() {
         cout << vectorRau[i];
     }*/
 
-   /* ofstream afisareR("textRau.txt", ios::out);
-    afisareR << rau1;
-    afisareR.close();
-    ifstream intrareR("textRau.txt", ios::in);
-    Rau r2;
-    intrareR >> r2;
-    cout << r2;
-    intrareR.close()*/;
+    /* ofstream afisareR("textRau.txt", ios::out);
+     afisareR << rau1;
+     afisareR.close();
+     ifstream intrareR("textRau.txt", ios::in);
+     Rau r2;
+     intrareR >> r2;
+     cout << r2;
+     intrareR.close()*/;
 
-    cout << endl << "Au fost create " << Rau::getnumar_rauri() << " rauri";
+     cout << endl << "Au fost create " << Rau::getnumar_rauri() << " rauri";
 
-    cout << endl << endl << endl << endl;
-    cout << "-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/--/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-";
-    cout << endl << endl << endl << endl;
+     cout << endl << endl << endl << endl;
+     cout << "-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/--/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-";
+     cout << endl << endl << endl << endl;
 
-    //----------------------------------
+     //----------------------------------
 
-    string nume_veciniRO[] = { "Ungaria", "Ucraina", "Moldova", "Serbia", "Bulgaria" };
-    string nume_veciniLH[] = { "Elvetia", "Austria" };
+     string nume_veciniRO[] = { "Ungaria", "Ucraina", "Moldova", "Serbia", "Bulgaria" };
+     string nume_veciniLH[] = { "Elvetia", "Austria" };
 
-    cout << "Tara despre care se vorbeste va fi highlighted cu verde" << endl;
+     cout << "Tara despre care se vorbeste va fi highlighted cu verde" << endl;
 
-    Natiune natiune1;
-    Natiune natiune2(2, nume_veciniLH);
-    Natiune natiune3("Romania", 19000000, 5, nume_veciniRO);
-    Natiune natiune4 = natiune3;
-    Natiune natiune5;
-    Natiune natiune6;
-    natiune6 = natiune5 = natiune2;
-    Natiune natiune7;
-    //cin >> natiune7;
+     Natiune natiune1;
+     Natiune natiune2(2, nume_veciniLH);
+     Natiune natiune3("Romania", 19000000, 5, nume_veciniRO);
+     Natiune natiune4 = natiune3;
+     Natiune natiune5;
+     Natiune natiune6;
+     natiune6 = natiune5 = natiune2;
+     Natiune natiune7;
+     //cin >> natiune7;
 
-    natiune1.afisareInfoNatiune();
-    natiune2.afisareInfoNatiune();
-    natiune3.afisareInfoNatiune();
-    natiune4.afisareInfoNatiune();
-    natiune5.afisareInfoNatiune();
-    natiune6.afisareInfoNatiune();
-    natiune7.afisareInfoNatiune();
+     natiune1.afisareInfoNatiune();
+     natiune2.afisareInfoNatiune();
+     natiune3.afisareInfoNatiune();
+     natiune4.afisareInfoNatiune();
+     natiune5.afisareInfoNatiune();
+     natiune6.afisareInfoNatiune();
+     natiune7.afisareInfoNatiune();
 
-    cout << natiune4.getMarimeNatiune() << endl << natiune4.getNumeNatiune() << endl << natiune4.getNrVecini() << endl;
-    int varN = natiune4.getNrVecini();
-    int Na = 0;
-    while (Na < varN)
-    {
-        cout << "->" << *(natiune4.getNumeVecini() + Na) << endl;
-        Na++;
-    }
-    natiune2.setMarimeNatiune(69803);
-    natiune2.setNumeNatiune("Liechtenstein");
-    natiune2.setVecini(1, nume_veciniLH);
-    cout << endl;
-    natiune2.afisareInfoNatiune();
-
-    cout << getSirTari(natiune4) << endl;
-    cout << "Media populatiei dintre " << natiune1.getNumeNatiune() << " si " << natiune2.getNumeNatiune() << " este de " << fixed << setprecision(2) << mediaPopulatiei(natiune1, natiune2) << endl;
-    cout << natiune3[0] << endl;
-    int valIn = 10;
-    valIn = (int)natiune3;
-    cout << valIn;
-    cout << endl << endl;
-    /* const int numar_obiecteN = 2;
-     vector <Natiune> vectorNatiuni(numar_obiecteN);
-
-     for (int i = 0; i < numar_obiecteN; ++i) {
-         cout << "Introduceti datele pentru obiectul Natiune la pozitia " << i << ":\n";
-         cin >> vectorNatiuni[i];
+     cout << natiune4.getMarimeNatiune() << endl << natiune4.getNumeNatiune() << endl << natiune4.getNrVecini() << endl;
+     int varN = natiune4.getNrVecini();
+     int Na = 0;
+     while (Na < varN)
+     {
+         cout << "->" << *(natiune4.getNumeVecini() + Na) << endl;
+         Na++;
      }
+     natiune2.setMarimeNatiune(69803);
+     natiune2.setNumeNatiune("Liechtenstein");
+     natiune2.setVecini(1, nume_veciniLH);
+     cout << endl;
+     natiune2.afisareInfoNatiune();
+
+     cout << getSirTari(natiune4) << endl;
+     cout << "Media populatiei dintre " << natiune1.getNumeNatiune() << " si " << natiune2.getNumeNatiune() << " este de " << fixed << setprecision(2) << mediaPopulatiei(natiune1, natiune2) << endl;
+     cout << natiune3[0] << endl;
+     int valIn = 10;
+     valIn = (int)natiune3;
+     cout << valIn;
      cout << endl << endl;
-     for (int i = 0; i < numar_obiecteN; ++i) {
-         cout << "Afisare obiect Natiune la pozitia " << i << ":\n";
-         cout << vectorNatiuni[i];
-     }*/
-    Natiune nat;
-    /*fstream natiuneAfis("NatiuniOut.bin", ios::out | ios::binary);
-    natiuneAfis.write((char*)&nat, sizeof(Natiune));
-    natiuneAfis.close();*/
+     /* const int numar_obiecteN = 2;
+      vector <Natiune> vectorNatiuni(numar_obiecteN);
 
-    cout << endl << "Au fost create " << Natiune::getnr_natiuni() << " natiuni" << endl;
+      for (int i = 0; i < numar_obiecteN; ++i) {
+          cout << "Introduceti datele pentru obiectul Natiune la pozitia " << i << ":\n";
+          cin >> vectorNatiuni[i];
+      }
+      cout << endl << endl;
+      for (int i = 0; i < numar_obiecteN; ++i) {
+          cout << "Afisare obiect Natiune la pozitia " << i << ":\n";
+          cout << vectorNatiuni[i];
+      }*/
+     Natiune nat;
+     /*fstream natiuneAfis("NatiuniOut.bin", ios::out | ios::binary);
+     natiuneAfis.write((char*)&nat, sizeof(Natiune));
+     natiuneAfis.close();*/
 
-    cout << endl << endl << endl << endl;
-    cout << "-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/--/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-";
-    cout << endl << endl << endl << endl;
+     cout << endl << "Au fost create " << Natiune::getnr_natiuni() << " natiuni" << endl;
 
-    Continent continent("Europa", 12345, natiune3);
-    Continent continent2(natiune1);
-    Continent continent3(natiune2);
-    Continent continent4(natiune5);
-    Continent continent5(natiune6);
-    Continent c6;
-    continent5 = continent;
-    continent.afisareContinet();
-    continent2.getNume();
-    cout << continent.GetNatCont() << endl;
-    continent.afisareContinet();
-    continent2.afisareContinet();
-    cout << endl << endl;
-    cout << continent3;
-    //cin >> continent4;
-    cout << continent4;
-    cout << continent5;
-    Continent cont6;
-    /*fstream contAfis("ContinenteOut.bin", ios::out | ios::binary);
-    contAfis.write((char*)&cont6, sizeof(Natiune));
-    contAfis.close();*/
-    
-    cout << endl << endl << endl << endl;
-    cout << "-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-TARI INSULARE-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-";
-    cout << endl << endl << endl << endl;
+     cout << endl << endl << endl << endl;
+     cout << "-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/--/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-";
+     cout << endl << endl << endl << endl;
 
-    TaraInsulara ti1("Indian", 36854);
-    cout << ti1 << endl;
-    TaraInsulara ti2;
-    cout << ti2;
-    TaraInsulara ti3 = ti2;
-    TaraInsulara ti4;
-    ti4 = ti2;
+     Continent continent("Europa", 12345, natiune3);
+     Continent continent2(natiune1);
+     Continent continent3(natiune2);
+     Continent continent4(natiune5);
+     Continent continent5(natiune6);
+     Continent c6;
+     continent5 = continent;
+     continent.afisareContinet();
+     continent2.getNume();
+     cout << continent.GetNatCont() << endl;
+     continent.afisareContinet();
+     continent2.afisareContinet();
+     cout << endl << endl;
+     cout << continent3;
+     //cin >> continent4;
+     cout << continent4;
+     cout << continent5;
+     Continent cont6;
+     /*fstream contAfis("ContinenteOut.bin", ios::out | ios::binary);
+     contAfis.write((char*)&cont6, sizeof(Natiune));
+     contAfis.close();*/
 
-    cout << endl << endl << endl << endl;
-    cout << "-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-RAURI ROMANESTI-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-";
-    cout << endl << endl << endl << endl;
+     cout << endl << endl << endl << endl;
+     cout << "-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-TARI INSULARE-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-";
+     cout << endl << endl << endl << endl;
 
-    RauriRomanesti r1;
-    r1.setNumeRau("Dambovita");
-    RauriRomanesti r2("Brasov", 8, true);
-    r2.setNumeRau("Prut");
-    cout << r1 << endl;
-    cout << r2 << endl;
+     TaraInsulara ti1("Indian", 36854);
+     cout << ti1 << endl;
+     TaraInsulara ti2;
+     cout << ti2;
+     TaraInsulara ti3 = ti2;
+     TaraInsulara ti4;
+     ti4 = ti2;
 
-    return 0;
-   
+     cout << endl << endl << endl << endl;
+     cout << "-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-RAURI ROMANESTI-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-";
+     cout << endl << endl << endl << endl;
+
+     RauriRomanesti r1;
+     r1.setNumeRau("Dambovita");
+     RauriRomanesti r2("Brasov", 8, true);
+     r2.setNumeRau("Prut");
+     cout << r1 << endl;
+     cout << r2 << endl;
+
+     cout << endl << endl << endl << endl;
+     cout << "-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-Faza 8-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-";
+     cout << endl << endl << endl << endl;
+
+     ObiecteGeografice o1;
+     o1[0] = new Golf;
+     o1[1] = new Rau;
+     o1[2] = new Golf;
+     o1[3] = new RauriRomanesti;
+     o1[4] = new Golf;
+     o1[5] = new Golf;
+     o1[6] = new RauriRomanesti;
+     o1[7] = new Rau;
+     o1[8] = new Rau;
+     o1[9] = new Golf;
+
+     for (int i = 0; i < 10; i++) {
+         o1[i]->DescrieCorp();
+         cout << endl;
+     }
+
+     ObiecteTeritoriale o2;
+     o2[0] = new Natiune;
+     for (int i = 0; i < 10; i++) {
+         o2[i]->DescrieTeritoriu();
+         cout << endl;
+     }
+     return 0;
 }
